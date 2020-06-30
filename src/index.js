@@ -22,23 +22,34 @@ function renderDog(dogImg){
     })
 }
 // fetchs all dog breeds, and recive message hash to pass into a function as an argument.
-function getDogs(){
+function getDogs(filter){
     return fetch(breedUrl)
         .then(resp => resp.json())
         .then(json => {
             const breeds = Object.keys(json.message)
-            listDogs(breeds)
+            listDogs(breeds, filter)
         })
 }
 
-function listDogs(list){
+function listDogs(list, filter){
     let ul = document.querySelector("#dog-breeds")
-    list.forEach(breed => {
-        let li = document.createElement("li") //create an "li" if for a application such as this for each element.
-            li.setAttribute("id", "list-dogs")
-            console.log(breed)
-            li.innerText = breed  
-            ul.appendChild(li) 
+        ul.innerHTML = ""
+    if(filter){
+        list.forEach(breed => {
+            if(breed[0] === filter){
+                let li = document.createElement("li") //create an "li" if for a application such as this for each element.
+                    li.setAttribute("id", "list-dogs")
+                    li.innerText = breed  
+                    ul.appendChild(li) 
+            }   
+        })
+    }else{
+        list.forEach(breed => {
+            let li = document.createElement("li") //create an "li" if for a application such as this for each element.
+                li.setAttribute("id", "list-dogs")
+                console.log(breed)
+                li.innerText = breed  
+                ul.appendChild(li) 
     })
     let dogColor = document.querySelectorAll("#list-dogs")
         dogColor.forEach(element => {
@@ -47,37 +58,19 @@ function listDogs(list){
             element.style.color = "red"
             })
         })
+    }    
 }
 
 function show(){
-    let array = []
     let selector = document.querySelector("#breed-dropdown")
-    let ulDog = document.querySelector("#dog-breeds")
-    let allDogs = document.querySelectorAll("#list-dogs")
         selector.addEventListener("change", function(event){
+            // debugger
             event.preventDefault()
-            for(let el of ulDog.children){
-                // debugger
-                let inner = el.innerText
-                // debugger
-                if(inner.startsWith(event.target.value)){
-                    // debugger
-                    let li = document.createElement("li")
-                        li.innerText = inner
-                        array.push(li)
-                        ulDog.appendChild(li)
-                        // debugger
-                }
-                
-                // for(let element of array){
-                //     // debugger
-                //     ulDog.appendChild(element)
-                // }
-            }
+            let filter = event.target.value
+            getDogs(filter)
  
     })
 }
-
 
 document.addEventListener("DOMContentLoaded", function(){
     fetchDog(),
